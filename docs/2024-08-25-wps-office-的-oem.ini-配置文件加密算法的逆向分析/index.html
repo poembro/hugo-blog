@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>WPS Office 的 OEM.INI 配置文件加密算法的逆向分析 - hugo-blog 网站</title><meta name="Description" content="从某个版本开始，WPS Office 的 OEM.INI 中所有的配置项都被加密了，本文尝试通过逆向安装程序解析配置项的加密方式。"><meta property="og:url" content="//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/">
+  <meta property="og:site_name" content="hugo-blog 网站">
+  <meta property="og:title" content="WPS Office 的 OEM.INI 配置文件加密算法的逆向分析">
+  <meta property="og:description" content="从某个版本开始，WPS Office 的 OEM.INI 中所有的配置项都被加密了，本文尝试通过逆向安装程序解析配置项的加密方式。">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-08-24T19:55:59+00:00">
+    <meta property="article:modified_time" content="2024-08-24T19:55:59+00:00">
+    <meta property="article:tag" content="C&#43;&#43;">
+    <meta property="article:tag" content="ASM">
+    <meta property="og:image" content="//localhost:1313/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="//localhost:1313/logo.png">
+  <meta name="twitter:title" content="WPS Office 的 OEM.INI 配置文件加密算法的逆向分析">
+  <meta name="twitter:description" content="从某个版本开始，WPS Office 的 OEM.INI 中所有的配置项都被加密了，本文尝试通过逆向安装程序解析配置项的加密方式。">
+      <meta name="twitter:site" content="@yukiisait">
+<meta name="application-name" content="poembro的小窝">
+<meta name="apple-mobile-web-app-title" content="poembro的小窝"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" /><link rel="prev" href="//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" /><link rel="next" href="//localhost:1313/test/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "WPS Office 的 OEM.INI 配置文件加密算法的逆向分析",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "\/\/localhost:1313\/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90\/"
+        },"image": ["\/\/localhost:1313\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "C\u002b\u002b, ASM","wordcount":  1355 ,
+        "url": "\/\/localhost:1313\/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90\/","datePublished": "2024-08-24T19:55:59+00:00","dateModified": "2024-08-24T19:55:59+00:00","license": "Copyright © 2024 YukiIsait","publisher": {
+            "@type": "Organization",
+            "name": "poembro","logo": {
+                    "@type": "ImageObject",
+                    "url": "\/\/localhost:1313\/images\/avatar.png",
+                    "width":  500 ,
+                    "height":  500 
+                }},"author": {
+                "@type": "Person",
+                "name": "作者"
+            },"description": "从某个版本开始，WPS Office 的 OEM.INI 中所有的配置项都被加密了，本文尝试通过逆向安装程序解析配置项的加密方式。"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="hugo-blog 网站"><span class="header-title-pre"><i class='fa-solid fa-seedling fa-fw' aria-hidden='true'></i></span>poembro的小窝</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/YukiIsait/Blog/" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="hugo-blog 网站"><span class="header-title-pre"><i class='fa-solid fa-seedling fa-fw' aria-hidden='true'></i></span>poembro的小窝</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/YukiIsait/Blog/" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">WPS Office 的 OEM.INI 配置文件加密算法的逆向分析</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>作者</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E9%80%86%E5%90%91%E7%A0%B4%E8%A7%A3/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>逆向破解</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-08-24">2024-08-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1355 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#本文简介">本文简介</a></li>
+    <li><a href="#动态分析">动态分析</a></li>
+    <li><a href="#静态分析">静态分析</a></li>
+    <li><a href="#后记">后记</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="本文简介">本文简介</h2>
+<p>众所周知，WPS Office 的安装包是一种套娃结构，从官网下载的安装包经过解压缩会得到一个真正的安装程序和一个 OEM.INI 配置文件，通过修改这个配置文件，我们可以对 WPS 做一些定制并重新封包，但是从某个版本开始，OEM.INI 中所有的配置项都被加密了，所以本文尝试通过逆向安装程序的方式看看它是怎么加密的。</p>
+<h2 id="动态分析">动态分析</h2>
+<p>首先解压出安装程序和配置文件，看了一下是 32 位程序，通过 x32dbg 进行调试。因为配置文件是 INI 格式的，所以我们首先想到，安装程序是否通过 Win32 API 提供的 INI 操作函数读取配置。而 <code>Kernel32.dll</code> 的 <code>GetPrivateProfileStringW</code> 和 <code>GetPrivateProfileStringA</code> 函数可以用来读取配置文件，那么加上断点，运行程序，发现断在了 <code>GetPrivateProfileStringW</code> 处。</p>
+<p>通过查阅微软文档，我们得知它的第一个参数是节名，第二个参数是键名，最后一个参数是文件名。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">DWORD</span> <span class="nf">GetPrivateProfileStringW</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPCWSTR</span> <span class="n">lpAppName</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPCWSTR</span> <span class="n">lpKeyName</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPCWSTR</span> <span class="n">lpDefault</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">out</span><span class="p">]</span> <span class="n">LPWSTR</span>  <span class="n">lpReturnedString</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">DWORD</span>   <span class="n">nSize</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="n">in</span><span class="p">]</span>  <span class="n">LPCWSTR</span> <span class="n">lpFileName</span>
+</span></span><span class="line"><span class="cl"><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>查看栈信息，这正是我们解压出来的 OEM.INI 文件。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-00-45.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-00-45.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-00-45.png" data-sub-html="<h2>断在了 GetPrivateProfileStringW 处</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-00-45.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-00-45.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-00-45.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-00-45.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-00-45.png" width="1441" height="826" />
+    </a><figcaption class="image-caption">断在了 GetPrivateProfileStringW 处</figcaption>
+    </figure>
+<p>一路运行到返回，直到回到程序空间，给这个函数打上断点然后重新运行来到函数开头，发现栈里只有明文，看起来加密就是在这个函数里调用的。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-01-23.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-01-23.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-01-23.png" data-sub-html="<h2>回到程序空间</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-01-23.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-01-23.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-01-23.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-01-23.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-01-23.png" width="1441" height="826" />
+    </a><figcaption class="image-caption">回到程序空间</figcaption>
+    </figure>
+<p>从头单步调试并观察栈和寄存器信息，直到执行 <code>call a.551C30</code> 之后，发现 <code>eax</code> 中出现了密文，看来这个函数就是加密函数了，打上断点，进入查看。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-02-59.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-02-59.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-02-59.png" data-sub-html="<h2>总体加密函数</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-02-59.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-02-59.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-02-59.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-02-59.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-02-59.png" width="1441" height="826" />
+    </a><figcaption class="image-caption">总体加密函数</figcaption>
+    </figure>
+<p>单步执行并观察这个函数里的调用，发现执行 <code>call a.551F10</code> 之后，返回了一串像是密钥一样的东西，先记下来，继续执行。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-23-43.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-23-43.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-23-43.png" data-sub-html="<h2>密钥获取函数</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-23-43.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-23-43.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-23-43.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-23-43.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-23-43.png" width="1441" height="826" />
+    </a><figcaption class="image-caption">密钥获取函数</figcaption>
+    </figure>
+<p>而这个密钥和明文一起被传入了下一个调用中，这看起来就是加密函数本体了。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-23.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-23.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-23.png" data-sub-html="<h2>加密函数</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-23.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-23.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-23.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-23.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-23.png" width="1441" height="826" />
+    </a><figcaption class="image-caption">加密函数</figcaption>
+    </figure>
+<p>继续单步，直到执行 <code>call a.692D60</code> 之后，<code>esi</code> 中出现了类似配置文件中的形似 Base64 的密文。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-38.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-38.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-38.png" data-sub-html="<h2>编码函数</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-38.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-38.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-38.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-38.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-24-38.png" width="1441" height="826" />
+    </a><figcaption class="image-caption">编码函数</figcaption>
+    </figure>
+<p>最后，执行过几个符号替换之后，密文变成了配置文件中的样子。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-21-50.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-21-50.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-21-50.png" data-sub-html="<h2>符号替换</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-21-50.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-21-50.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-21-50.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-21-50.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-25_05-21-50.png" width="1441" height="826" />
+    </a><figcaption class="image-caption">符号替换</figcaption>
+    </figure>
+<p>现在，该静态分析出手了，看看这个加密是用的什么算法吧。</p>
+<h2 id="静态分析">静态分析</h2>
+<p>用 IDA32 打开安装程序，定位到动态调试发现的总体加密函数。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-52-42.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-52-42.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-52-42.png" data-sub-html="<h2>总体加密函数</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-52-42.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-52-42.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-52-42.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-52-42.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-52-42.png" width="1229" height="623" />
+    </a><figcaption class="image-caption">总体加密函数</figcaption>
+    </figure>
+<p>首先看一下获取密钥的函数 <code>sub_441F10</code>，注意这里的 <code>_Init_thread_header</code> 和结尾的 <code>_Init_thread_footer</code>，这种结构意味着这是一个函数内的静态变量。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-58-59.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-58-59.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-58-59.png" data-sub-html="<h2>静态变量结构</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-58-59.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-58-59.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-58-59.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-58-59.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-58-59.png" width="1011" height="541" />
+    </a><figcaption class="image-caption">静态变量结构</figcaption>
+    </figure>
+<p>看起来是把一些硬编码的数据进行一些简单转换，但我们已经通过动态调试得到了密钥，就不再分析了。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-56-55.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-56-55.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-56-55.png" data-sub-html="<h2>一些简单转换</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-56-55.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-56-55.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-56-55.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-56-55.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_01-56-55.png" width="1111" height="623" />
+    </a><figcaption class="image-caption">一些简单转换</figcaption>
+    </figure>
+<p>接下来是加密算法部分，我们注意到它先对字符串做了 16 字节对齐，然后对 <code>16 - (str_len &amp; 0xF)</code> 也就是 16 字节对齐后空余的部分全部填充了 <code>aligned_str_len - str_len</code> 空余大小作为内容，这种行为与 PKCS5 和 PKCS7 吻合。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-02-44.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-02-44.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-02-44.png" data-sub-html="<h2>加密部分</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-02-44.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-02-44.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-02-44.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-02-44.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-02-44.png" width="1011" height="664" />
+    </a><figcaption class="image-caption">加密部分</figcaption>
+    </figure>
+<p>继续深入查看，这里有两个函数调用。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-07-27.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-07-27.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-07-27.png" data-sub-html="<h2>加密部分函数调用</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-07-27.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-07-27.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-07-27.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-07-27.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-07-27.png" width="987" height="630" />
+    </a><figcaption class="image-caption">加密部分函数调用</figcaption>
+    </figure>
+<p>到了最深处，这就是加密算法了，这里最初判断算法类型的时候用了 GPT，丢给它算法的关键部分，便可判断出这是 AES 算法，而考虑到配置文件的明文和密文是一一对应的，就初步判断这是 ECB 算法了，因为也没看见 IV 相关的参数。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-09-10.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-09-10.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-09-10.png" data-sub-html="<h2>加密算法</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-09-10.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-09-10.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-09-10.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-09-10.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-09-10.png" width="1494" height="804" />
+    </a><figcaption class="image-caption">加密算法</figcaption>
+    </figure>
+<p>接下来是编码函数，进入编码函数后看见有码表，打开一看，便猜测这是标准 Base64 编码。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-14-26.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-14-26.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-14-26.png" data-sub-html="<h2>Base64 码表</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-14-26.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-14-26.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-14-26.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-14-26.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-14-26.png" width="1008" height="219" />
+    </a><figcaption class="image-caption">Base64 码表</figcaption>
+    </figure>
+<p>现在可以验证猜想了，我们使用 <a href="https://cyberchef.org/" target="_blank" rel="noopener noreffer ">CyberChef</a> 网站，添加一个 AES 加密和 Base64 编码，与动态调试的明文和密文做比对，发现结果一致。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-19-54.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-19-54.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-19-54.png" data-sub-html="<h2>尝试加密</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-19-54.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-19-54.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-19-54.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-19-54.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-19-54.png" width="1139" height="616" />
+    </a><figcaption class="image-caption">尝试加密</figcaption>
+    </figure>
+<p>现在就只剩最后一步了，这里看到程序替换掉了 Base64 中的三个符号。</p>
+<figure><a class="lightgallery" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-21-10.png" title="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-21-10.png" data-thumbnail="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-21-10.png" data-sub-html="<h2>符号替换</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-21-10.png"
+            data-srcset="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-21-10.png, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-21-10.png 1.5x, /2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-21-10.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/assets/Snipaste_2024-08-26_02-21-10.png" width="542" height="342" />
+    </a><figcaption class="image-caption">符号替换</figcaption>
+    </figure>
+<p>这样我们就完整的知道 WPS 的安装程序是如何对配置文件加解密的了，现在只需要写一个转换程序，就可以实现对明文和密文 INI 的转换了。</p>
+<h2 id="后记">后记</h2>
+<p>这是我的第一次逆向实战，成功了，很开心。没遇到任何加壳、反调试等措施，加密算法也比较简单，但即使是这样，能成功也有一定的运气因素，不了解的东西实在是太多了呢&hellip;</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-08-24</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" data-title="WPS Office 的 OEM.INI 配置文件加密算法的逆向分析" data-via="yukiisait" data-hashtags="C&#43;&#43;,ASM"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" data-hashtag="C&#43;&#43;"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" data-title="WPS Office 的 OEM.INI 配置文件加密算法的逆向分析"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" data-title="WPS Office 的 OEM.INI 配置文件加密算法的逆向分析"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" data-title="WPS Office 的 OEM.INI 配置文件加密算法的逆向分析"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>,&nbsp;<a href="/tags/asm/">ASM</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" class="prev" rel="prev" title="一张水卡的数据解析及利用（M1卡破解）"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>一张水卡的数据解析及利用（M1卡破解）</a>
+            <a href="/test/" class="next" rel="next" title="test">test<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2023 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

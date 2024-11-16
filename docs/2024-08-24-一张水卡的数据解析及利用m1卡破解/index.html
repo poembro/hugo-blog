@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>一张水卡的数据解析及利用（M1卡破解） - hugo-blog 网站</title><meta name="Description" content="目前最便宜好用的 NFC 读卡器当属 PN532 模块了，那我们能用它来做些什么呢？（坏笑）"><meta property="og:url" content="//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/">
+  <meta property="og:site_name" content="hugo-blog 网站">
+  <meta property="og:title" content="一张水卡的数据解析及利用（M1卡破解）">
+  <meta property="og:description" content="目前最便宜好用的 NFC 读卡器当属 PN532 模块了，那我们能用它来做些什么呢？（坏笑）">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-08-24T12:15:50+00:00">
+    <meta property="article:modified_time" content="2024-08-24T12:15:50+00:00">
+    <meta property="article:tag" content="C&#43;&#43;">
+    <meta property="article:tag" content="RFID">
+    <meta property="og:image" content="//localhost:1313/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="//localhost:1313/logo.png">
+  <meta name="twitter:title" content="一张水卡的数据解析及利用（M1卡破解）">
+  <meta name="twitter:description" content="目前最便宜好用的 NFC 读卡器当属 PN532 模块了，那我们能用它来做些什么呢？（坏笑）">
+      <meta name="twitter:site" content="@yukiisait">
+<meta name="application-name" content="poembro的小窝">
+<meta name="apple-mobile-web-app-title" content="poembro的小窝"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" /><link rel="prev" href="//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/" /><link rel="next" href="//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "一张水卡的数据解析及利用（M1卡破解）",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "\/\/localhost:1313\/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3\/"
+        },"image": ["\/\/localhost:1313\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "C\u002b\u002b, RFID","wordcount":  1481 ,
+        "url": "\/\/localhost:1313\/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3\/","datePublished": "2024-08-24T12:15:50+00:00","dateModified": "2024-08-24T12:15:50+00:00","license": "Copyright © 2024 YukiIsait","publisher": {
+            "@type": "Organization",
+            "name": "poembro","logo": {
+                    "@type": "ImageObject",
+                    "url": "\/\/localhost:1313\/images\/avatar.png",
+                    "width":  500 ,
+                    "height":  500 
+                }},"author": {
+                "@type": "Person",
+                "name": "作者"
+            },"description": "目前最便宜好用的 NFC 读卡器当属 PN532 模块了，那我们能用它来做些什么呢？（坏笑）"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="hugo-blog 网站"><span class="header-title-pre"><i class='fa-solid fa-seedling fa-fw' aria-hidden='true'></i></span>poembro的小窝</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/YukiIsait/Blog/" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="hugo-blog 网站"><span class="header-title-pre"><i class='fa-solid fa-seedling fa-fw' aria-hidden='true'></i></span>poembro的小窝</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/YukiIsait/Blog/" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">一张水卡的数据解析及利用（M1卡破解）</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>作者</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E9%80%86%E5%90%91%E7%A0%B4%E8%A7%A3/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>逆向破解</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-08-24">2024-08-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1481 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#设备--软件">设备 &amp; 软件</a></li>
+    <li><a href="#解析密钥--读取数据">解析密钥 &amp; 读取数据</a></li>
+    <li><a href="#分析数据">分析数据</a>
+      <ul>
+        <li><a href="#key-a-的分析">Key A 的分析</a></li>
+        <li><a href="#块-0-的分析">块 0 的分析</a></li>
+        <li><a href="#块-1-的分析">块 1 的分析</a></li>
+      </ul>
+    </li>
+    <li><a href="#利用">利用</a></li>
+    <li><a href="#写在结尾">写在结尾</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="设备--软件">设备 &amp; 软件</h2>
+<p>目前最便宜好用的 NFC 读卡器当属 PN532 模块了，将它连接到电脑上还需要一个 TTL 转 USB 工具，这里使用 CH340 转接板。连接好读卡器的串口排线，就可以使用 M1T 等软件尝试解密钥啦。</p>
+<h2 id="解析密钥--读取数据">解析密钥 &amp; 读取数据</h2>
+<p>使用 M1T 解析出 IC 卡的 Key B 为 <code>A9 DE 7F 3C EB 1F</code>。
+读取数据进行分析，以下是该卡的第 10 和 11 扇区以及 0 扇区的块 0，除此之外的扇区数据均为空。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">Section 0
+</span></span><span class="line"><span class="cl">Block 0: 5E E1 6E A4 75 08 04 00 01 DD 54 AF A4 43 D6 1D
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Section 10
+</span></span><span class="line"><span class="cl">Block 0: 23 0A 01 00 09 F5 00 D6 02 00 5E 00 00 5E 00 62
+</span></span><span class="line"><span class="cl">Block 1: 1B F5 03 EE 04 0A AA 00 A0 01 83 1B 00 9E 00 84
+</span></span><span class="line"><span class="cl">Block 2: 23 0A 01 00 09 F5 00 D6 02 00 5E 00 00 5E 00 62
+</span></span><span class="line"><span class="cl">Block 3: 0A A1 1E 91 5B 81 7F 07 88 69 A9 DE 7F 3C EB 1F
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Section 11
+</span></span><span class="line"><span class="cl">Block 0: C1 3E 12 2C 00 C1 00 00 00 00 06 00 00 06 00 B6
+</span></span><span class="line"><span class="cl">Block 1: 1B F5 03 EE 04 0A AA 00 A0 01 83 1B 00 9E 00 84
+</span></span><span class="line"><span class="cl">Block 2: C1 3E 12 2C 00 C1 00 00 00 00 06 00 00 06 00 B6
+</span></span><span class="line"><span class="cl">Block 3: 0B A1 1E 91 5B 81 7F 07 88 69 A9 DE 7F 3C EB 1F
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="分析数据">分析数据</h2>
+<p>通过观察发现，这些扇区的 Key A 并不相同，而 Key B 为固定值；并且第 10 扇区和第 11 扇区中块 0 和块 2 的数据相同。
+通过多次刷卡发现，第 10 扇区会被刷卡机修改，而第 11 扇区未被使用。
+接下来的分析重点将放在 Key A 和第 10 扇区上。</p>
+<h3 id="key-a-的分析">Key A 的分析</h3>
+<p>通过观察发现 Key A 的结构如下：</p>
+<p><strong><font color="blue">0A</font> <font color="deeppink">A1 1E 91 5B</font> <font color="orange">81</font></strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">数据位</th>
+          <th style="text-align: left">作用</th>
+          <th style="text-align: left">计算</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong><font color="blue">0A</font></strong></td>
+          <td style="text-align: left">扇区号</td>
+          <td style="text-align: left"><code>0A</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong><font color="deeppink">A1 1E 91 5B</font></strong></td>
+          <td style="text-align: left">取反 UID</td>
+          <td style="text-align: left"><code>~5E ~E1 ~6E ~A4</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong><font color="orange">81</font></strong></td>
+          <td style="text-align: left">固定值</td>
+          <td style="text-align: left"><code>81</code></td>
+      </tr>
+  </tbody>
+</table>
+<h3 id="块-0-的分析">块 0 的分析</h3>
+<p>通过多次比对数据改动和刷卡机显示的数额，猜测出一些数据位的作用如下：</p>
+<p><strong><font color="blue">23</font> <font color="brown">0A</font> <font color="deeppink">01 00</font> 09 <font color="purple">F5</font> 00 <font color="mediumblue">D6 02</font> 00 <font color="orange">5E</font> 00 00 <font color="orange">5E</font> 00 <font color="magenta">62</font></strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">数据位</th>
+          <th style="text-align: left">作用</th>
+          <th style="text-align: left">计算</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong><font color="blue">23</font></strong></td>
+          <td style="text-align: left">异或校验</td>
+          <td style="text-align: left"><code>0A ^ 01 ^ 00 ^ 09 ^ F5 ^ 00 ^ D6 ^ 02 ^ 00 ^ 5E ^ 00 ^ 00 ^ 5E ^ 00</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong><font color="brown">0A</font></strong></td>
+          <td style="text-align: left">和校验</td>
+          <td style="text-align: left"><code>01 + 00 + 09</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong><font color="deeppink">01 00</font></strong></td>
+          <td style="text-align: left">剩余数额</td>
+          <td style="text-align: left"><code>0.01 * 100</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong><font color="purple">F5</font></strong></td>
+          <td style="text-align: left">和取反校验</td>
+          <td style="text-align: left"><code>~ (01 + 00 + 09)</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong><font color="mediumblue">D6 02</font></strong></td>
+          <td style="text-align: left">上次使用数额</td>
+          <td style="text-align: left"><code>7.26 * 100</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong><font color="orange">5E</font></strong></td>
+          <td style="text-align: left">使用次数</td>
+          <td style="text-align: left"></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong><font color="magenta">62</font></strong></td>
+          <td style="text-align: left">和取反校验</td>
+          <td style="text-align: left"><code>~  (0A + 01 + 00 + 09 + F5 + 00 + D6 + 02 + 00 + 5E + 00 + 00 + 5E + 00)</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>黑色标注的数据猜测为无实际作用的数据。</p>
+<h3 id="块-1-的分析">块 1 的分析</h3>
+<p>这里的数据是固定的，不知道用途，但可以猜测出第一位和最后一位为校验位：</p>
+<p><strong><font color="blue">1B</font> F5 03 EE 04 0A AA 00 A0 01 83 1B 00 9E 00 <font color="magenta">84</font></strong></p>
+<table>
+  <thead>
+      <tr>
+          <th style="text-align: left">数据位</th>
+          <th style="text-align: left">作用</th>
+          <th style="text-align: left">计算</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td style="text-align: left"><strong><font color="blue">1B</font></strong></td>
+          <td style="text-align: left">异或校验</td>
+          <td style="text-align: left"><code>F5 ^ 03 ^ EE ^ 04 ^ 0A ^ AA ^ 00 ^ A0 ^ 01 ^ 83 ^ 1B ^ 00 ^ 9E ^ 00</code></td>
+      </tr>
+      <tr>
+          <td style="text-align: left"><strong><font color="magenta">84</font></strong></td>
+          <td style="text-align: left">和取反校验</td>
+          <td style="text-align: left"><code>~  (F5 + 03 + EE + 04 + 0A + AA + 00 + A0 + 01 + 83 + 1B + 00 + 9E + 00)</code></td>
+      </tr>
+  </tbody>
+</table>
+<p>通过比对，尝试将不同的数据位置零后也可以正常使用。</p>
+<h2 id="利用">利用</h2>
+<p>先构建 M1 卡的结构。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// M1Card.h
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#pragma once
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">TM1CardManufacturerBlock</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span> <span class="n">UID</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">UIDXorChecksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">SAK</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">ATQA</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">ManufacturerInfomation</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">M1CardManufacturerBlock</span><span class="p">,</span> <span class="o">*</span><span class="n">PM1CardManufacturerBlock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">TM1CardKeyBlock</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">KeyA</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">AccessBits</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">KeyB</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">M1CardKeyBlock</span><span class="p">,</span> <span class="o">*</span><span class="n">PM1CardKeyBlock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">TM1CardSector</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">M1CardManufacturerBlock</span> <span class="n">ManufacturerBlock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">uint8_t</span> <span class="n">DataBlock0</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">DataBlock1</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">DataBlock2</span><span class="p">[</span><span class="mi">16</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">M1CardKeyBlock</span> <span class="n">KeyBlock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">M1CardSector</span><span class="p">,</span> <span class="o">*</span><span class="n">PM1CardSector</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">M1Card_SetCardInfomation</span><span class="p">(</span><span class="n">PM1CardSector</span> <span class="n">cardData</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">uid</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">sak</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">atqa</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>实现 M1 卡制造商信息设置函数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// M1Card.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&#34;M1Card.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">M1Card_SetCardInfomation</span><span class="p">(</span><span class="n">PM1CardSector</span> <span class="n">cardData</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">uid</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">sak</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">atqa</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">uidData</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">uid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">cardData</span><span class="o">-&gt;</span><span class="n">ManufacturerBlock</span><span class="p">.</span><span class="n">UID</span> <span class="o">=</span> <span class="n">uid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cardData</span><span class="o">-&gt;</span><span class="n">ManufacturerBlock</span><span class="p">.</span><span class="n">UIDXorChecksum</span> <span class="o">=</span> <span class="n">uidData</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">^</span> <span class="n">uidData</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">^</span> <span class="n">uidData</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">uidData</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cardData</span><span class="o">-&gt;</span><span class="n">ManufacturerBlock</span><span class="p">.</span><span class="n">SAK</span> <span class="o">=</span> <span class="n">sak</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">cardData</span><span class="o">-&gt;</span><span class="n">ManufacturerBlock</span><span class="p">.</span><span class="n">ATQA</span> <span class="o">=</span> <span class="n">atqa</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后构建解析出的水卡的结构。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// WaterCard.h
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#pragma once
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;M1Card.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">TWaterCardSector</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">OverallXorChecksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">AmountSumChecksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">union</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">uint16_t</span> <span class="n">Amount</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">uint8_t</span> <span class="n">AmountByte1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="kt">uint8_t</span> <span class="n">AmountByte2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">Padding1Byte1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">AmountSumXorChecksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">Padding5Bytes</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">UsageCountSum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">Padding1Byte2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">UsageCountSumChecksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">Padding1Byte3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">OverallSumXorChecksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">WaterCardSector</span><span class="p">,</span> <span class="o">*</span><span class="n">PWaterCardSector</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">TWaterCardKeyA</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">Index</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">UIDXorChecksum</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">Padding1Byte</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">WaterCardKeyA</span><span class="p">,</span> <span class="o">*</span><span class="n">PWaterCardKeyA</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">WaterCard_SetCard</span><span class="p">(</span><span class="n">PM1CardSector</span> <span class="n">cardData</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">uid</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">amount</span><span class="p">);</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>最后实现利用函数。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// WaterCard.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;WaterCard.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">WaterCard_SetKey</span><span class="p">(</span><span class="n">PM1CardSector</span> <span class="n">cardData</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">uid</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">16</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">PM1CardKeyBlock</span> <span class="n">key</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">cardData</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">KeyBlock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">PWaterCardKeyA</span> <span class="n">keyA</span> <span class="o">=</span> <span class="p">(</span><span class="n">PWaterCardKeyA</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">key</span><span class="o">-&gt;</span><span class="n">KeyA</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">uidData</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">uid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">keyA</span><span class="o">-&gt;</span><span class="n">Index</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="p">)</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">keyA</span><span class="o">-&gt;</span><span class="n">Padding1Byte</span> <span class="o">=</span> <span class="mh">0x81</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">keyA</span><span class="o">-&gt;</span><span class="n">UIDXorChecksum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">~</span><span class="n">uidData</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="p">((</span><span class="kt">uint16_t</span><span class="o">*</span><span class="p">)</span> <span class="n">key</span><span class="o">-&gt;</span><span class="n">KeyB</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0xDEA9</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="p">((</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span> <span class="p">(</span><span class="n">key</span><span class="o">-&gt;</span><span class="n">KeyB</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span> <span class="o">=</span> <span class="mh">0x1FEB3C7F</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="p">((</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span> <span class="n">key</span><span class="o">-&gt;</span><span class="n">AccessBits</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0x6988077F</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">WaterCard_SetDataSector</span><span class="p">(</span><span class="n">PM1CardSector</span> <span class="n">cardData</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">amount</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">sectorData</span> <span class="o">=</span> <span class="n">cardData</span><span class="p">[</span><span class="mi">10</span><span class="p">].</span><span class="n">DataBlock0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">sectorDataCopy</span> <span class="o">=</span> <span class="n">cardData</span><span class="p">[</span><span class="mi">10</span><span class="p">].</span><span class="n">DataBlock2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PWaterCardSector</span> <span class="n">sector</span> <span class="o">=</span> <span class="p">(</span><span class="n">PWaterCardSector</span><span class="p">)</span> <span class="n">sectorData</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">memset</span><span class="p">(</span><span class="n">sector</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">sector</span><span class="o">-&gt;</span><span class="n">Amount</span> <span class="o">=</span> <span class="n">amount</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sector</span><span class="o">-&gt;</span><span class="n">AmountSumChecksum</span> <span class="o">=</span> <span class="n">sector</span><span class="o">-&gt;</span><span class="n">AmountByte1</span> <span class="o">+</span> <span class="n">sector</span><span class="o">-&gt;</span><span class="n">AmountByte2</span> <span class="o">+</span> <span class="n">sector</span><span class="o">-&gt;</span><span class="n">Padding1Byte1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sector</span><span class="o">-&gt;</span><span class="n">AmountSumXorChecksum</span> <span class="o">=</span> <span class="o">~</span><span class="n">sector</span><span class="o">-&gt;</span><span class="n">AmountSumChecksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">14</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sector</span><span class="o">-&gt;</span><span class="n">OverallXorChecksum</span> <span class="o">^=</span> <span class="n">sectorData</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">        <span class="n">sector</span><span class="o">-&gt;</span><span class="n">OverallSumXorChecksum</span> <span class="o">+=</span> <span class="n">sectorData</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sector</span><span class="o">-&gt;</span><span class="n">OverallSumXorChecksum</span> <span class="o">=</span> <span class="o">~</span><span class="n">sector</span><span class="o">-&gt;</span><span class="n">OverallSumXorChecksum</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">memcpy_s</span><span class="p">(</span><span class="n">sectorDataCopy</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">sectorData</span><span class="p">,</span> <span class="mi">16</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">WaterCard_SetDataIDSector</span><span class="p">(</span><span class="n">PM1CardSector</span> <span class="n">cardData</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint64_t</span> <span class="n">idData0</span> <span class="o">=</span> <span class="mh">0x00AA0A04EE03F51D</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint64_t</span> <span class="n">idData1</span> <span class="o">=</span> <span class="mh">0xC0000000000001A0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint64_t</span><span class="o">*</span> <span class="n">sectorData</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint64_t</span><span class="o">*</span><span class="p">)</span> <span class="n">cardData</span><span class="p">[</span><span class="mi">10</span><span class="p">].</span><span class="n">DataBlock1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sectorData</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">idData0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">sectorData</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">idData1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">WaterCard_SetCard</span><span class="p">(</span><span class="n">PM1CardSector</span> <span class="n">cardData</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">uid</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="n">amount</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">M1Card_SetCardInfomation</span><span class="p">(</span><span class="n">cardData</span><span class="p">,</span> <span class="n">uid</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">WaterCard_SetKey</span><span class="p">(</span><span class="n">cardData</span><span class="p">,</span> <span class="n">uid</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">WaterCard_SetDataIDSector</span><span class="p">(</span><span class="n">cardData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">WaterCard_SetDataSector</span><span class="p">(</span><span class="n">cardData</span><span class="p">,</span> <span class="n">amount</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>测试生成 Dump 文件。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// Main.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;WaterCard.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">M1CardSector</span><span class="p">)</span> <span class="o">*</span> <span class="mi">16</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PM1CardSector</span> <span class="n">cardData</span> <span class="o">=</span> <span class="p">(</span><span class="n">PM1CardSector</span><span class="p">)</span> <span class="nf">malloc</span><span class="p">(</span><span class="n">size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">cardData</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// UID: F7-F7-F7-02, Amount: 8.08
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nf">WaterCard_SetCard</span><span class="p">(</span><span class="n">cardData</span><span class="p">,</span> <span class="mh">0x02F7F7F7</span><span class="p">,</span> <span class="mh">0x2803</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">FILE</span><span class="o">*</span> <span class="n">file</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">fopen_s</span><span class="p">(</span><span class="o">&amp;</span><span class="n">file</span><span class="p">,</span> <span class="s">&#34;Card.dump&#34;</span><span class="p">,</span> <span class="s">&#34;wb&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">cardData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">fwrite</span><span class="p">(</span><span class="n">cardData</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">file</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">fclose</span><span class="p">(</span><span class="n">file</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">free</span><span class="p">(</span><span class="n">cardData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="写在结尾">写在结尾</h2>
+<p><font color="red">⚠⚠⚠ 本篇文章仅供学习，请勿用于非法用途！⚠⚠⚠</font></p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-08-24</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" data-title="一张水卡的数据解析及利用（M1卡破解）" data-via="yukiisait" data-hashtags="C&#43;&#43;,RFID"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" data-hashtag="C&#43;&#43;"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" data-title="一张水卡的数据解析及利用（M1卡破解）"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" data-title="一张水卡的数据解析及利用（M1卡破解）"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" data-title="一张水卡的数据解析及利用（M1卡破解）"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/c&#43;&#43;/">C&#43;&#43;</a>,&nbsp;<a href="/tags/rfid/">RFID</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/" class="prev" rel="prev" title="使用 VS Code 作为 Visual C&#43;&#43; 6.0 (VC6) 的编辑器"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>使用 VS Code 作为 Visual C++ 6.0 (VC6) 的编辑器</a>
+            <a href="/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/" class="next" rel="next" title="WPS Office 的 OEM.INI 配置文件加密算法的逆向分析">WPS Office 的 OEM.INI 配置文件加密算法的逆向分析<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2023 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

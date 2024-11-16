@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>使用 VS Code 作为 Visual C&#43;&#43; 6.0 (VC6) 的编辑器 - hugo-blog 网站</title><meta name="Description" content="由于一些众所周知的原因，我们不得不使用过时的 VC&#43;&#43; 6.0 来学习 C 语言，那我们就只使用它的编译器吧！"><meta property="og:url" content="//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/">
+  <meta property="og:site_name" content="hugo-blog 网站">
+  <meta property="og:title" content="使用 VS Code 作为 Visual C&#43;&#43; 6.0 (VC6) 的编辑器">
+  <meta property="og:description" content="由于一些众所周知的原因，我们不得不使用过时的 VC&#43;&#43; 6.0 来学习 C 语言，那我们就只使用它的编译器吧！">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-08-24T11:16:25+00:00">
+    <meta property="article:modified_time" content="2024-08-24T11:16:25+00:00">
+    <meta property="article:tag" content="Visual Studio">
+    <meta property="article:tag" content="C&#43;&#43;">
+    <meta property="og:image" content="//localhost:1313/logo.png">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="//localhost:1313/logo.png">
+  <meta name="twitter:title" content="使用 VS Code 作为 Visual C&#43;&#43; 6.0 (VC6) 的编辑器">
+  <meta name="twitter:description" content="由于一些众所周知的原因，我们不得不使用过时的 VC&#43;&#43; 6.0 来学习 C 语言，那我们就只使用它的编译器吧！">
+      <meta name="twitter:site" content="@yukiisait">
+<meta name="application-name" content="poembro的小窝">
+<meta name="apple-mobile-web-app-title" content="poembro的小窝"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/" /><link rel="prev" href="//localhost:1313/2024-08-23-visual-studio-%E4%BD%BF%E7%94%A8-clang-format-%E8%87%AA%E5%AE%9A%E4%B9%89-c-%E4%BB%A3%E7%A0%81%E9%BB%98%E8%AE%A4%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%A0%B7%E5%BC%8F/" /><link rel="next" href="//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "使用 VS Code 作为 Visual C++ 6.0 (VC6) 的编辑器",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "\/\/localhost:1313\/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8\/"
+        },"image": ["\/\/localhost:1313\/images\/Apple-Devices-Preview.png"],"genre": "posts","keywords": "Visual Studio, C\u002b\u002b","wordcount":  832 ,
+        "url": "\/\/localhost:1313\/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8\/","datePublished": "2024-08-24T11:16:25+00:00","dateModified": "2024-08-24T11:16:25+00:00","license": "Copyright © 2024 YukiIsait","publisher": {
+            "@type": "Organization",
+            "name": "poembro","logo": {
+                    "@type": "ImageObject",
+                    "url": "\/\/localhost:1313\/images\/avatar.png",
+                    "width":  500 ,
+                    "height":  500 
+                }},"author": {
+                "@type": "Person",
+                "name": "作者"
+            },"description": "由于一些众所周知的原因，我们不得不使用过时的 VC++ 6.0 来学习 C 语言，那我们就只使用它的编译器吧！"
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="hugo-blog 网站"><span class="header-title-pre"><i class='fa-solid fa-seedling fa-fw' aria-hidden='true'></i></span>poembro的小窝</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/"> 所有文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/about/"> 关于 </a><a class="menu-item" href="https://github.com/YukiIsait/Blog/" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="hugo-blog 网站"><span class="header-title-pre"><i class='fa-solid fa-seedling fa-fw' aria-hidden='true'></i></span>poembro的小窝</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="">所有文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/about/" title="">关于</a><a class="menu-item" href="https://github.com/YukiIsait/Blog/" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw' aria-hidden='true'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">使用 VS Code 作为 Visual C++ 6.0 (VC6) 的编辑器</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>作者</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>编程语言</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-08-24">2024-08-24</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 832 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#为什么呢">为什么呢</a></li>
+    <li><a href="#安置-vc98-编译器工具">安置 VC98 编译器工具</a></li>
+    <li><a href="#配置-vs-code-编辑器环境">配置 VS Code 编辑器环境</a></li>
+    <li><a href="#提取和制作-vc98-编译器工具如果你感兴趣">提取和制作 VC98 编译器工具（如果你感兴趣）</a>
+      <ul>
+        <li><a href="#提取编译器文件">提取编译器文件</a></li>
+        <li><a href="#编写编译脚本">编写编译脚本</a></li>
+      </ul>
+    </li>
+    <li><a href="#资源下载">资源下载</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="为什么呢">为什么呢</h2>
+<p>由于一些众所周知的原因，我们不得不使用<del>经典</del>（过时）的比我们年龄还大的已有 25 年历史的 VC++ 6.0 来学习 C 语言。而对于现在来说，这个经典的 IDE 过于简陋，并且早已不兼容新的操作系统，用它学习早已成为一种折磨。但现代的 C 语言编译环境又无法兼容某些教材或考试的语言逻辑。那…我们就只使用它的编译器吧！</p>
+<h2 id="安置-vc98-编译器工具">安置 VC98 编译器工具</h2>
+<blockquote>
+<ul>
+<li>预制的工具链打包贴在了文章末尾，可以直接下载使用。</li>
+<li>工具链文件从 <a href="https://winworldpc.com/product/microsoft-visual-stu/60" target="_blank" rel="noopener noreffer ">Visual Studio 6.0 Enterprise (6.00.8168)</a> 中提取，提取步骤放在文章末尾。</li>
+</ul>
+</blockquote>
+<p>将编译器文件放置到一个<strong>没有中文和空格的路径</strong>，这里我的路径是 <code>E:/Library/VC98</code>。</p>
+<figure><a class="lightgallery" href="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-33-08.png" title="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-33-08.png" data-thumbnail="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-33-08.png" data-sub-html="<h2>工具链目录</h2>">
+        <img
+            class="lazyload"
+            src="/svg/loading.min.svg"
+            data-src="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-33-08.png"
+            data-srcset="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-33-08.png, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-33-08.png 1.5x, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-33-08.png 2x"
+            data-sizes="auto"
+            alt="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-33-08.png" width="757" height="311" />
+    </a><figcaption class="image-caption">工具链目录</figcaption>
+    </figure>
+<h2 id="配置-vs-code-编辑器环境">配置 VS Code 编辑器环境</h2>
+<ol>
+<li>
+<p>安装 C/C++ 插件。</p>
+<figure><a class="lightgallery" href="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-37-10.png" title="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-37-10.png" data-thumbnail="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-37-10.png" data-sub-html="<h2>C/C&#43;&#43; 插件</h2>">
+            <img
+                class="lazyload"
+                src="/svg/loading.min.svg"
+                data-src="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-37-10.png"
+                data-srcset="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-37-10.png, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-37-10.png 1.5x, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-37-10.png 2x"
+                data-sizes="auto"
+                alt="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-37-10.png" width="786" height="213" />
+        </a><figcaption class="image-caption">C/C++ 插件</figcaption>
+        </figure>
+</li>
+<li>
+<p>安装 Code Runner 插件。</p>
+<figure><a class="lightgallery" href="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-38-35.png" title="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-38-35.png" data-thumbnail="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-38-35.png" data-sub-html="<h2>Code Runner 插件</h2>">
+            <img
+                class="lazyload"
+                src="/svg/loading.min.svg"
+                data-src="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-38-35.png"
+                data-srcset="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-38-35.png, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-38-35.png 1.5x, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-38-35.png 2x"
+                data-sizes="auto"
+                alt="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-38-35.png" width="786" height="214" />
+        </a><figcaption class="image-caption">Code Runner 插件</figcaption>
+        </figure>
+</li>
+<li>
+<p>在<del>自己的项目目录</del>（想放哪就放哪qwq）建立一个新目录作为工作区存放需要用 VC6 编译的 C 语言文件，这里我放在了桌面 <code>D:\Desktop\VC6_C</code>。</p>
+<figure><a class="lightgallery" href="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-45-15.png" title="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-45-15.png" data-thumbnail="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-45-15.png" data-sub-html="<h2>项目目录</h2>">
+            <img
+                class="lazyload"
+                src="/svg/loading.min.svg"
+                data-src="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-45-15.png"
+                data-srcset="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-45-15.png, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-45-15.png 1.5x, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-45-15.png 2x"
+                data-sizes="auto"
+                alt="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-45-15.png" width="756" height="356" />
+        </a><figcaption class="image-caption">项目目录</figcaption>
+        </figure>
+</li>
+<li>
+<p>在工作区中新建 <code>.vscode</code> 目录，并在其中新建 <code>settings.json</code>，内容为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;C_Cpp.default.includePath&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// VC98编译器所在路径/INCLUDE
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="s2">&#34;E:/Library/VC98/INCLUDE&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;code-runner.executorMap&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// VC98编译器所在路径/VC98.BAT
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nt">&#34;c&#34;</span><span class="p">:</span> <span class="s2">&#34;cd $dir &amp;&amp; E:/Library/VC98/VC98.BAT CL $fileName /nologo &amp;&amp; $dir$fileNameWithoutExt&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// VC98编译器所在路径/VC98.BAT
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nt">&#34;cpp&#34;</span><span class="p">:</span> <span class="s2">&#34;cd $dir &amp;&amp; E:/Library/VC98/VC98.BAT CL $fileName /nologo &amp;&amp; $dir$fileNameWithoutExt&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>
+<p>在工作区中新建一个测试 C 文件，右键 <code>Run Code</code> 运行。</p>
+<figure><a class="lightgallery" href="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-48-39.png" title="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-48-39.png" data-thumbnail="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-48-39.png" data-sub-html="<h2>右键运行</h2>">
+            <img
+                class="lazyload"
+                src="/svg/loading.min.svg"
+                data-src="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-48-39.png"
+                data-srcset="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-48-39.png, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-48-39.png 1.5x, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-48-39.png 2x"
+                data-sizes="auto"
+                alt="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-48-39.png" width="1151" height="297" />
+        </a><figcaption class="image-caption">右键运行</figcaption>
+        </figure>
+</li>
+<li>
+<p>运行结果在底部终端窗口显示。</p>
+<figure><a class="lightgallery" href="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-42-31.png" title="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-42-31.png" data-thumbnail="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-42-31.png" data-sub-html="<h2>运行结果</h2>">
+            <img
+                class="lazyload"
+                src="/svg/loading.min.svg"
+                data-src="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-42-31.png"
+                data-srcset="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-42-31.png, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-42-31.png 1.5x, /2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-42-31.png 2x"
+                data-sizes="auto"
+                alt="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/assets/Snipaste_2024-08-24_19-42-31.png" width="562" height="206" />
+        </a><figcaption class="image-caption">运行结果</figcaption>
+        </figure>
+</li>
+</ol>
+<h2 id="提取和制作-vc98-编译器工具如果你感兴趣">提取和制作 VC98 编译器工具（如果你感兴趣）</h2>
+<h3 id="提取编译器文件">提取编译器文件</h3>
+<ol>
+<li>
+<p>下载 <a href="https://winworldpc.com/product/microsoft-visual-stu/60" target="_blank" rel="noopener noreffer ">Visual Studio 6.0 Enterprise (6.00.8168)</a>，得到 <code>Visual Studio 6.0 Enterprise (6.00.8168).7z</code> 并解压出其中的 <code>VSE600ENU1.ISO</code> 文件。</p>
+</li>
+<li>
+<p>解压出 <code>VSE600ENU1.ISO</code> 中的 <code>VC98\BIN</code>，<code>VC98\INCLUDE</code>，<code>VC98\LIB</code> 目录和 <code>COMMON\MSDEV98\BIN\MSPDB60.DLL</code> 文件。</p>
+</li>
+<li>
+<p>将 <code>MSPDB60.DLL</code> 文件复制到解压出的 <code>VC98\BIN</code> 中。</p>
+</li>
+<li>
+<p>现在我们得到了以下目录</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-txt" data-lang="txt"><span class="line"><span class="cl">VC98
+</span></span><span class="line"><span class="cl">├───BIN
+</span></span><span class="line"><span class="cl">├───INCLUDE
+</span></span><span class="line"><span class="cl">└───LIB
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ol>
+<h3 id="编写编译脚本">编写编译脚本</h3>
+<p>这里直接使用 <code>BIN</code> 下的编译器是找不到头文件和库文件的，因为原始的 VC++ 6.0 软件在调用编译器时会设置 <code>INCLUDE</code> 和 <code>LIB</code> 环境变量，所以我们通过脚本包装编译命令。</p>
+<ul>
+<li>
+<p><code>VC98.BAT &lt;编译工具&gt; [参数]</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bat" data-lang="bat"><span class="line"><span class="cl"><span class="p">@</span><span class="k">ECHO</span> OFF
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">SET</span> <span class="nv">INCLUDE</span><span class="p">=</span><span class="nv">%~DP0</span>INCLUDE
+</span></span><span class="line"><span class="cl"><span class="k">SET</span> <span class="nv">LIB</span><span class="p">=</span><span class="nv">%~DP0</span>LIB
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">FOR</span> <span class="k">/F</span> <span class="s2">&#34;TOKENS=1* DELIMS= &#34;</span> <span class="se">%%</span>I <span class="k">IN</span> <span class="p">(</span><span class="s2">&#34;</span><span class="nv">%*</span><span class="s2">&#34;</span><span class="p">)</span> <span class="k">DO</span> <span class="s2">&#34;</span><span class="nv">%~DP0</span><span class="s2">BIN\</span><span class="se">%%</span><span class="s2">I&#34;</span> <span class="se">%%</span>J
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<h2 id="资源下载">资源下载</h2>
+<ul>
+<li><a href="https://wwjz.lanzoul.com/iK02X28ajoyd" target="_blank" rel="noopener noreffer ">预制工具链下载（密码：YUKI）</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-08-24</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/" data-title="使用 VS Code 作为 Visual C&#43;&#43; 6.0 (VC6) 的编辑器" data-via="yukiisait" data-hashtags="Visual Studio,C&#43;&#43;"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/" data-hashtag="Visual Studio"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/" data-title="使用 VS Code 作为 Visual C&#43;&#43; 6.0 (VC6) 的编辑器"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/" data-title="使用 VS Code 作为 Visual C&#43;&#43; 6.0 (VC6) 的编辑器"><i data-svg-src="/lib/simple-icons/icons/line.min.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/" data-title="使用 VS Code 作为 Visual C&#43;&#43; 6.0 (VC6) 的编辑器"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/visual-studio/">Visual Studio</a>,&nbsp;<a href="/tags/c&#43;&#43;/">C&#43;&#43;</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/2024-08-23-visual-studio-%E4%BD%BF%E7%94%A8-clang-format-%E8%87%AA%E5%AE%9A%E4%B9%89-c-%E4%BB%A3%E7%A0%81%E9%BB%98%E8%AE%A4%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%A0%B7%E5%BC%8F/" class="prev" rel="prev" title="Visual Studio 使用 clang-format 自定义 C&#43;&#43; 代码默认格式化样式"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Visual Studio 使用 clang-format 自定义 C++ 代码默认格式化样式</a>
+            <a href="/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/" class="next" rel="next" title="一张水卡的数据解析及利用（M1卡破解）">一张水卡的数据解析及利用（M1卡破解）<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2023 - 2024</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/lightgallery/css/lightgallery-bundle.min.css"><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/thumbnail/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/plugins/zoom/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"lightgallery":true,"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

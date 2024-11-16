@@ -1,0 +1,25 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>逆向破解 - 分类 - hugo-blog 网站</title>
+        <link>//localhost:1313/categories/%E9%80%86%E5%90%91%E7%A0%B4%E8%A7%A3/</link>
+        <description>逆向破解 - 分类 - hugo-blog 网站</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>Copyright © 2024 YukiIsait</copyright><lastBuildDate>Sat, 24 Aug 2024 19:55:59 &#43;0000</lastBuildDate><atom:link href="//localhost:1313/categories/%E9%80%86%E5%90%91%E7%A0%B4%E8%A7%A3/" rel="self" type="application/rss+xml" /><item>
+    <title>WPS Office 的 OEM.INI 配置文件加密算法的逆向分析</title>
+    <link>//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/</link>
+    <pubDate>Sat, 24 Aug 2024 19:55:59 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/</guid>
+    <description><![CDATA[<h2 id="本文简介">本文简介</h2>
+<p>众所周知，WPS Office 的安装包是一种套娃结构，从官网下载的安装包经过解压缩会得到一个真正的安装程序和一个 OEM.INI 配置文件，通过修改这个配置文件，我们可以对 WPS 做一些定制并重新封包，但是从某个版本开始，OEM.INI 中所有的配置项都被加密了，所以本文尝试通过逆向安装程序的方式看看它是怎么加密的。</p>]]></description>
+</item>
+<item>
+    <title>一张水卡的数据解析及利用（M1卡破解）</title>
+    <link>//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/</link>
+    <pubDate>Sat, 24 Aug 2024 12:15:50 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/</guid>
+    <description><![CDATA[<h2 id="设备--软件">设备 &amp; 软件</h2>
+<p>目前最便宜好用的 NFC 读卡器当属 PN532 模块了，将它连接到电脑上还需要一个 TTL 转 USB 工具，这里使用 CH340 转接板。连接好读卡器的串口排线，就可以使用 M1T 等软件尝试解密钥啦。</p>]]></description>
+</item>
+</channel>
+</rss>

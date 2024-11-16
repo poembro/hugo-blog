@@ -1,0 +1,54 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>hugo-blog 网站</title>
+        <link>//localhost:1313/</link>
+        <description>poembro的小窝，记录分享，自我提升与学习成长的自留地</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>Copyright © 2024 YukiIsait</copyright><lastBuildDate>Sat, 16 Nov 2024 10:28:12 &#43;0000</lastBuildDate>
+            <atom:link href="//localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+        <item>
+    <title>test</title>
+    <link>//localhost:1313/test/</link>
+    <pubDate>Sat, 16 Nov 2024 10:28:12 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>//localhost:1313/test/</guid>
+    <description><![CDATA[<h2 id="问题描述">问题描述</h2>
+<h3 id="test">test</h3>]]></description>
+</item>
+<item>
+    <title>WPS Office 的 OEM.INI 配置文件加密算法的逆向分析</title>
+    <link>//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/</link>
+    <pubDate>Sat, 24 Aug 2024 19:55:59 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>//localhost:1313/2024-08-25-wps-office-%E7%9A%84-oem.ini-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90/</guid>
+    <description><![CDATA[<h2 id="本文简介">本文简介</h2>
+<p>众所周知，WPS Office 的安装包是一种套娃结构，从官网下载的安装包经过解压缩会得到一个真正的安装程序和一个 OEM.INI 配置文件，通过修改这个配置文件，我们可以对 WPS 做一些定制并重新封包，但是从某个版本开始，OEM.INI 中所有的配置项都被加密了，所以本文尝试通过逆向安装程序的方式看看它是怎么加密的。</p>]]></description>
+</item>
+<item>
+    <title>一张水卡的数据解析及利用（M1卡破解）</title>
+    <link>//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/</link>
+    <pubDate>Sat, 24 Aug 2024 12:15:50 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>//localhost:1313/2024-08-24-%E4%B8%80%E5%BC%A0%E6%B0%B4%E5%8D%A1%E7%9A%84%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%8F%8A%E5%88%A9%E7%94%A8m1%E5%8D%A1%E7%A0%B4%E8%A7%A3/</guid>
+    <description><![CDATA[<h2 id="设备--软件">设备 &amp; 软件</h2>
+<p>目前最便宜好用的 NFC 读卡器当属 PN532 模块了，将它连接到电脑上还需要一个 TTL 转 USB 工具，这里使用 CH340 转接板。连接好读卡器的串口排线，就可以使用 M1T 等软件尝试解密钥啦。</p>]]></description>
+</item>
+<item>
+    <title>使用 VS Code 作为 Visual C&#43;&#43; 6.0 (VC6) 的编辑器</title>
+    <link>//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/</link>
+    <pubDate>Sat, 24 Aug 2024 11:16:25 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>//localhost:1313/2024-08-24-%E4%BD%BF%E7%94%A8-vs-code-%E4%BD%9C%E4%B8%BA-vc6-%E7%9A%84%E7%BC%96%E8%BE%91%E5%99%A8/</guid>
+    <description><![CDATA[<h2 id="为什么呢">为什么呢</h2>
+<p>由于一些众所周知的原因，我们不得不使用<del>经典</del>（过时）的比我们年龄还大的已有 25 年历史的 VC++ 6.0 来学习 C 语言。而对于现在来说，这个经典的 IDE 过于简陋，并且早已不兼容新的操作系统，用它学习早已成为一种折磨。但现代的 C 语言编译环境又无法兼容某些教材或考试的语言逻辑。那…我们就只使用它的编译器吧！</p>]]></description>
+</item>
+<item>
+    <title>Visual Studio 使用 clang-format 自定义 C&#43;&#43; 代码默认格式化样式</title>
+    <link>//localhost:1313/2024-08-23-visual-studio-%E4%BD%BF%E7%94%A8-clang-format-%E8%87%AA%E5%AE%9A%E4%B9%89-c-%E4%BB%A3%E7%A0%81%E9%BB%98%E8%AE%A4%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%A0%B7%E5%BC%8F/</link>
+    <pubDate>Fri, 23 Aug 2024 10:28:12 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>//localhost:1313/2024-08-23-visual-studio-%E4%BD%BF%E7%94%A8-clang-format-%E8%87%AA%E5%AE%9A%E4%B9%89-c-%E4%BB%A3%E7%A0%81%E9%BB%98%E8%AE%A4%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%A0%B7%E5%BC%8F/</guid>
+    <description><![CDATA[<h2 id="问题描述">问题描述</h2>
+<p>Visual Studio 的 C++ 代码格式化可选使用 clang-format，但它只提供默认样式，如果想使用自定义样式则需要在每个项目目录下放一个 <code>.clang-format</code> 或 <code>_clang-format</code> 文件，没有对全部项目通用的可自定义样式。</p>]]></description>
+</item>
+</channel>
+</rss>
